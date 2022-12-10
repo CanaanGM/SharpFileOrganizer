@@ -1,5 +1,7 @@
 ﻿// See using System.IO;
 
+using System.Runtime.InteropServices;
+
 namespace ConsoleApp
 {
     class Program
@@ -54,7 +56,7 @@ namespace ConsoleApp
             }
         }
 
-        public static void OpenImageAtRandom(string pathToImage)
+        public static bool OpenImageAtRandom(string pathToImage)
         {
             var imageFoldersPaths = Directory.GetDirectories(pathToImage);
 
@@ -85,10 +87,28 @@ namespace ConsoleApp
 
                 var randomImageIndex = new Random().Next(0, allImages.Count());
                 var randomImagePath = allImages[randomImageIndex];
-               
-                System.Diagnostics.Process.Start("explorer.exe" , randomImagePath);
+
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    System.Diagnostics.Process.Start("explorer.exe", randomImagePath);
+                    return true;
+                }
+
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                {
+                    System.Diagnostics.Process.Start("xdg-open", randomImagePath);
+                    return true;
+                }
+
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                {
+                    System.Diagnostics.Process.Start("open", randomImagePath);
+                    return true;
+                }
+
             }
             // there was no images to open . . .
+            return false;
         }
     }
 }
