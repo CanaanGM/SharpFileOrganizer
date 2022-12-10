@@ -18,7 +18,7 @@ namespace ConsoleApp
             OpenImageAtRandom(dest_dir);
         }
 
-        private static void OrganizeImages(string source_dir, string dest_dir)
+        private static void OrganizeImages(string source_dir, string dest_dir) // WorkInProgress
         {
             // Create the destination directory if it doesn't exist
             if (!Directory.Exists(dest_dir))
@@ -61,22 +61,22 @@ namespace ConsoleApp
             var imageFoldersPaths = Directory.GetDirectories(pathToImage);
 
             var supportedExtensions = new List<string> { "jpg", "png", "gif", "jpeg", "avif", "apneg" };
-            var allFilesInDir = new List<string>(); // every single file in the given dir
-            var allImages = new List<string>(); // holds all the IMAGE files from allFilesInDir
+            var allFilesInDir = new List<string>();   // every single file in the given dir
+            var allImages = new List<string>();      // holds all the IMAGE files from allFilesInDir
 
             foreach (string folder_path in imageFoldersPaths)
             {
 
                 var fileAttr = File.GetAttributes(folder_path);
                 if (fileAttr.HasFlag(FileAttributes.Directory))
-                // its a sub directory loop thru it
+                     // its a sub directory loop thru it
                     foreach (var item in Directory.GetDirectories(folder_path))
                     {
                         allFilesInDir.AddRange(Directory.GetFiles(item));
                     }
 
                 allFilesInDir.AddRange(
-                Directory.GetFiles(folder_path)
+                  Directory.GetFiles(folder_path)
                 );
             }
 
@@ -89,22 +89,15 @@ namespace ConsoleApp
                 var randomImagePath = allImages[randomImageIndex];
 
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                {
                     System.Diagnostics.Process.Start("explorer.exe", randomImagePath);
-                    return true;
-                }
 
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                {
                     System.Diagnostics.Process.Start("xdg-open", randomImagePath);
-                    return true;
-                }
 
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-                {
                     System.Diagnostics.Process.Start("open", randomImagePath);
-                    return true;
-                }
+            
+                return true;
 
             }
             // there was no images to open . . .
